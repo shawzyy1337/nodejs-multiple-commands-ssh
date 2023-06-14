@@ -26,10 +26,10 @@ function sendToServers(commands, index) {
   console.log("\n\x1b[35m[-]\x1b[0m Sending commands to server #" + (index + 1) + " (" + currentServer.Host + ")");
 
   const ssh = new SSH({
-    host: currentServer.Host,
-    port: currentServer.Port,
-    user: currentServer.User,
-    pass: currentServer.Pass
+    host: currentServer.host,
+    port: currentServer.port,
+    user: currentServer.user,
+    pass: currentServer.password
   });
 
   ssh.exec(commands, {}).start();
