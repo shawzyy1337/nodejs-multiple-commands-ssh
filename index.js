@@ -16,14 +16,13 @@ function sendToServers(commands, index) {
     if (stopExecution) {
       console.log("\n\x1b[33m[!]\x1b[0m All Perl processes have been killed. Sending stopped by user.");
     } else {
-      console.log("\n\x1b[33m[!]\x1b[0m Sending completed.");
+      console.log("\n\x1b[33m[!]\x1b[0m Sending completed.\n");
     }
-    rl.close();
     return;
   }
 
   const currentServer = server[index];
-  console.log("\n\x1b[35m[-]\x1b[0m Sending commands to server #" + (index + 1) + " (" + currentServer.Host + ")");
+  console.log("\n\x1b[35m[-]\x1b[0m Sending commands to server #" + (index + 1) + " (" + currentServer.host + ")");
 
   const ssh = new SSH({
     host: currentServer.host,
