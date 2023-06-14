@@ -2,16 +2,22 @@ const readline = require('readline');
 const SSH = require('simple-ssh');
 const server = require('./server.json');
 
-console.log("\x1b[36m[+]\x1b[0m Initiating sending to " + server.length + " servers.");
+console.log("\n\x1b[36m[+]\x1b[0m Initiating sending to " + server.length + " servers.");
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
+let stopExecution = false;
+
 function sendToServers(commands, index) {
-  if (index >= server.length) {
-    console.log("\n\x1b[33m[!]\x1b[0m Sending completed.");
+  if (index >= server.length || stopExecution) {
+    if (stopExecution) {
+      console.log("\n\x1b[33m[!]\x1b[0m All Perl processes have been killed. Sending stopped by user.");
+    } else {
+      console.log("\n\x1b[33m[!]\x1b[0m Sending completed.");
+    }
     rl.close();
     return;
   }
@@ -33,7 +39,14 @@ function sendToServers(commands, index) {
   }, 1000);
 }
 
-rl.question('Enter the commands to be sent: ', (commands) => {
-  console.log("\n\x1b[36m[*]\x1b[0m The commands to be sent are: " + commands + "\n");
-  sendToServers(commands, 0);
+rl.on('line', (input) => {
+  if (input.toLowerCase() === 'stop') {
+    stopExecution = true;
+    sendToServers('pkill -f perl', 0);
+  } else {
+    console.log("\n\x1b[36m[*]\x1b[0m The command to be sent is: " + input + "\n");
+    sendToServers(input, 0);
+  }
 });
+
+console.log("\nYou can enter commands to be sent or type 'stop' to kill all Perl processes.\n");
